@@ -1,7 +1,7 @@
 
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Larry Gao / COMP 400C 002 SP25
  *
  *   Note, additional comments provided throughout this source code
  *   is for educational purposes
@@ -150,10 +150,18 @@ class PriorityQueue<E, P> {
      */
 
     public Node add(E e, P priority) {
+        // create new node with given value and priority
+        Node newNode = new Node(e, priority, tree.size());
 
-        // YOUR CODE GOES HERE
-        return null;
-    }
+        // add new node to end of list (rightmost leaf)
+        tree.add(newNode);
+
+        // restore heap property by pulling up node to correct position
+        pullUp(newNode.idx);
+
+        // return reference to inserted node
+        return newNode;
+    } // end method add
 
 
     /**
@@ -167,10 +175,14 @@ class PriorityQueue<E, P> {
      */
 
     public boolean contains(E e) {
-
-        // ADD YOUR CODE HERE
+        // iterate through heap to check if element exists
+        for (Node node : tree) {
+            if (node.value.equals(e) && node.isValid()) {
+                return true;
+            }
+        }
         return false;
-    }
+    } // end method contains
 
 
     /**
