@@ -1,7 +1,7 @@
 
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Larry Gao / COMP 400C 002 SP25
  *
  *   This java file contains the problem solutions for the methods lastBoulder,
  *   showDuplicates, and pair methods. You should utilize the Java Collection
@@ -64,12 +64,22 @@ public class ProblemSolutions {
      */
 
   public static int lastBoulder(int[] boulders) {
+      PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder()); // max-heap
+      for (int boulder : boulders) {
+          pq.add(boulder);
+      }
 
-      //
-      // ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME / SECTION # ABOVE
-      //
-      return -1;
-  }
+      // process until one or no boulders remain
+      while (pq.size() > 1) {
+          int y = pq.poll(); // heaviest
+          int x = pq.poll(); // second heaviest
+          if (x != y) {
+              pq.add(y - x); // insert difference if not equal
+          }
+      }
+      // return last remaining boulder or 0 if none left
+      return pq.isEmpty() ? 0 : pq.peek();
+  } // end method lastBoulder
 
 
     /**
@@ -90,13 +100,28 @@ public class ProblemSolutions {
      */
 
     public static ArrayList<String> showDuplicates(ArrayList<String> input) {
+        PriorityQueue<String> pq = new PriorityQueue<>(); // min-heap for sorting
+        HashMap<String, Integer> countMap = new HashMap<>();
 
-        //
-        //  YOUR CODE GOES HERE
-        //
-        return new ArrayList<>();  // Make sure result is sorted in ascending order
+        // count occurrences of each string
+        for (String str : input) {
+            countMap.put(str, countMap.getOrDefault(str, 0) + 1);
+        }
 
-    }
+        // add only dupes to priority queue
+        for (Map.Entry<String, Integer> entry : countMap.entrySet()) {
+            if (entry.getValue() > 1) {
+                pq.add(entry.getKey());
+            }
+        }
+
+        // get elements in sorted order
+        ArrayList<String> result = new ArrayList<>();
+        while (!pq.isEmpty()) {
+            result.add(pq.poll());
+        }
+        return result;
+    } // end method showDuplicates
 
 
     /**
@@ -130,10 +155,23 @@ public class ProblemSolutions {
      */
 
     public static ArrayList<String> pair(int[] input, int k) {
+        PriorityQueue<String> pq = new PriorityQueue<>(); // min-heap for sorting
+        HashSet<Integer> seen = new HashSet<>(); // store numbers we have seen
 
-        //
-        //  YOUR CODE GOES HERE
-        //
-        return new ArrayList<>();  // Make sure returned lists is sorted as indicated above
-    }
-}
+        // iterate through numbers and find pairs
+        for (int num : input) {
+            int complement = k - num;
+            if (seen.contains(complement)) {
+                pq.add("(" + Math.min(num, complement) + ", " + Math.max(num, complement) + ")"); // ensure order within pairs
+            }
+            seen.add(num);
+        }
+
+        // get sorted pairs
+        ArrayList<String> result = new ArrayList<>();
+        while (!pq.isEmpty()) {
+            result.add(pq.poll());
+        }
+        return result;
+    } // end method pair
+} // end class ProblemSolutions
